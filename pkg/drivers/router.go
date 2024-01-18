@@ -18,6 +18,7 @@ func SetupRouter(warehouseRepository usecases.WarehouseRepository) *gin.Engine {
 	// Configure routes
 	v1 := r.Group("//v1")
 	{
+		// get item data by barcode
 		v1.GET("/placeholder", usecases.Placeholder(warehouseRepository, "placeholder"))
 	}
 
