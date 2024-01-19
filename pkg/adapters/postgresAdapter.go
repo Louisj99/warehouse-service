@@ -3,7 +3,6 @@ package adapters
 import (
 	"context"
 	"database/sql"
-	"errors"
 	_ "github.com/lib/pq"
 	"warehouse-service/pkg/entities"
 )
@@ -31,8 +30,8 @@ func (p *PostgresAdapter) PlaceholderAdapter(ctx context.Context, placeholder st
 	panic("implement me")
 }
 
-func (p *PostgresAdapter) GetItemInformation(ctx context.Context, barcode int) (*entities.ItemInformation, error) {
-	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.location_id 
+func (p *PostgresAdapter) GetItemInformation(ctx context.Context, barcode string) (*entities.ItemInformation, error) {
+	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.location_id , Inventory.quantity
               FROM Item 
               INNER JOIN Inventory ON Item.item_id = Inventory.item_id 
               WHERE Item.item_id = $1`
@@ -40,12 +39,31 @@ func (p *PostgresAdapter) GetItemInformation(ctx context.Context, barcode int) (
 	row := p.DB.QueryRowContext(ctx, query, barcode)
 
 	item := &entities.ItemInformation{}
-	err := row.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.LocationID)
+	err := row.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.LocationID, &item.Quantity)
 	if err != nil {
-		if errors.Is(sql.ErrNoRows, err) {
-			return nil, nil
-		}
 		return nil, err
 	}
 	return item, nil
+}
+
+func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]*entities.ItemInformation, error) {
+	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.location_id , Inventory.quantity
+			  FROM Item 
+			  INNER JOIN Inventory ON Item.item_id = Inventory.item_id`
+
+	rows, err := p.DB.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	var items []*entities.ItemInformation
+	for rows.Next() {
+		item := &entities.ItemInformation{}
+		err := rows.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.LocationID, &item.Quantity)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, item)
+	}
+	return items, nil
 }

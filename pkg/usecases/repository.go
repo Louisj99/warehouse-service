@@ -7,5 +7,6 @@ import (
 
 type WarehouseRepository interface {
 	PlaceholderAdapter(ctx context.Context, placeholder string) error
-	GetItemInformation(ctx context.Context, barcode int) (*entities.ItemInformation, error)
+	GetItemInformation(ctx context.Context, barcode string) (*entities.ItemInformation, error)
+	GetAllItems(ctx context.Context) ([]*entities.ItemInformation, error)
 }

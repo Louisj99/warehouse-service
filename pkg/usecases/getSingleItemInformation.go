@@ -6,36 +6,46 @@ import (
 )
 
 type getSingleItemInformationRequest struct {
-	barcode int `json:"barcode"`
+	Barcode string `json:"barcode" required:"true"`
 }
 
 type getSingleItemInformationResponse struct {
-	barcodePrefix int    `json:"barcodePrefix"`
-	itemName      string `json:"itemName"`
-	description   string `json:"description"`
-	locationID    int    `json:"locationID"`
-	quantity      int    `json:"quantity"`
+	BarcodePrefix string `json:"barcodePrefix"`
+	ItemName      string `json:"itemName"`
+	Description   string `json:"description"`
+	LocationID    int    `json:"locationID"`
+	Quantity      int    `json:"quantity"`
 }
 
 func GetSingleItemInformation(warehouseRepository WarehouseRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var request getSingleItemInformationRequest
+
 		err := c.ShouldBindJSON(&request)
 		if err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
+			c.JSON(400, gin.H{"Error With Request": err.Error()})
 			return
 		}
-		dbItemReturn, err := warehouseRepository.GetItemInformation(c, request.barcode)
+		if request.Barcode == "" {
+			c.JSON(400, gin.H{"error": "barcode is required"})
+			return
+		}
+		dbItemReturn, err := warehouseRepository.GetItemInformation(c, request.Barcode)
 		if err != nil {
+			if err.Error() == "sql: no rows in result set" {
+				c.JSON(404, gin.H{"error": "item not found"})
+				return
+			}
 			c.JSON(500, gin.H{"error": err.Error()})
 			return
 		}
 		response := getSingleItemInformationResponse{
-			barcodePrefix: dbItemReturn.BarcodePrefix,
-			itemName:      dbItemReturn.ItemName,
-			description:   dbItemReturn.Description,
-			locationID:    dbItemReturn.LocationID,
+			BarcodePrefix: dbItemReturn.BarcodePrefix,
+			ItemName:      dbItemReturn.ItemName,
+			Description:   dbItemReturn.Description,
+			LocationID:    dbItemReturn.LocationID,
+			Quantity:      dbItemReturn.Quantity,
 		}
 		c.JSON(http.StatusOK, response)
 	}
