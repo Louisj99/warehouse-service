@@ -13,7 +13,7 @@ type getSingleItemInformationResponse struct {
 	BarcodePrefix string `json:"barcodePrefix"`
 	ItemName      string `json:"itemName"`
 	Description   string `json:"description"`
-	LocationID    int    `json:"locationID"`
+	LocationName  string `json:"locationName"`
 	Quantity      int    `json:"quantity"`
 }
 
@@ -44,7 +44,7 @@ func GetSingleItemInformation(warehouseRepository WarehouseRepository) gin.Handl
 			BarcodePrefix: dbItemReturn.BarcodePrefix,
 			ItemName:      dbItemReturn.ItemName,
 			Description:   dbItemReturn.Description,
-			LocationID:    dbItemReturn.LocationID,
+			LocationName:  dbItemReturn.LocationName,
 			Quantity:      dbItemReturn.Quantity,
 		}
 		c.JSON(http.StatusOK, response)

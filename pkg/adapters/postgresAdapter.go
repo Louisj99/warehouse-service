@@ -31,15 +31,16 @@ func (p *PostgresAdapter) PlaceholderAdapter(ctx context.Context, placeholder st
 }
 
 func (p *PostgresAdapter) GetItemInformation(ctx context.Context, barcode string) (*entities.ItemInformation, error) {
-	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.location_id , Inventory.quantity
-              FROM Item 
-              INNER JOIN Inventory ON Item.item_id = Inventory.item_id 
+	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.quantity, Location.location_name
+			  FROM Item 
+			  INNER JOIN Inventory ON Item.item_id = Inventory.item_id
+			  INNER JOIN Location ON Inventory.location_id = Location.location_id
               WHERE Item.item_id = $1`
 
 	row := p.DB.QueryRowContext(ctx, query, barcode)
 
 	item := &entities.ItemInformation{}
-	err := row.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.LocationID, &item.Quantity)
+	err := row.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.Quantity, &item.LocationName)
 	if err != nil {
 		return nil, err
 	}
@@ -47,9 +48,10 @@ func (p *PostgresAdapter) GetItemInformation(ctx context.Context, barcode string
 }
 
 func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]*entities.ItemInformation, error) {
-	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.location_id , Inventory.quantity
+	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.quantity, Location.location_name
 			  FROM Item 
-			  INNER JOIN Inventory ON Item.item_id = Inventory.item_id`
+			  INNER JOIN Inventory ON Item.item_id = Inventory.item_id
+			  INNER JOIN Location ON Inventory.location_id = Location.location_id`
 
 	rows, err := p.DB.QueryContext(ctx, query)
 	if err != nil {
@@ -59,7 +61,7 @@ func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]*entities.ItemInfo
 	var items []*entities.ItemInformation
 	for rows.Next() {
 		item := &entities.ItemInformation{}
-		err := rows.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.LocationID, &item.Quantity)
+		err := rows.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.Quantity, &item.LocationName)
 		if err != nil {
 			return nil, err
 		}

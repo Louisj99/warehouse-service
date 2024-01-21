@@ -4,6 +4,6 @@ type ItemInformation struct {
 	BarcodePrefix string
 	ItemName      string
 	Description   string
-	LocationID    int
+	LocationName  string
 	Quantity      int
 }

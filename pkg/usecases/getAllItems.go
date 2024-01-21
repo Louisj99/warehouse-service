@@ -9,7 +9,7 @@ type getAllItemsResponse struct {
 	BarcodePrefix string `json:"barcodePrefix"`
 	ItemName      string `json:"itemName"`
 	Description   string `json:"description"`
-	LocationID    int    `json:"locationID"`
+	LocationID    string `json:"locationID"`
 	Quantity      int    `json:"quantity"`
 }
 
@@ -26,7 +26,7 @@ func GetAllItems(warehouseRepository WarehouseRepository) gin.HandlerFunc {
 				BarcodePrefix: dbItemReturn.BarcodePrefix,
 				ItemName:      dbItemReturn.ItemName,
 				Description:   dbItemReturn.Description,
-				LocationID:    dbItemReturn.LocationID,
+				LocationID:    dbItemReturn.LocationName,
 				Quantity:      dbItemReturn.Quantity,
 			})
 		}
