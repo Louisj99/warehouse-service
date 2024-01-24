@@ -9,4 +9,5 @@ type WarehouseRepository interface {
 	PlaceholderAdapter(ctx context.Context, placeholder string) error
 	GetItemInformation(ctx context.Context, barcode string) (*entities.ItemInformation, error)
 	GetAllItems(ctx context.Context) ([]*entities.ItemInformation, error)
+	UpdateItemInformation(ctx context.Context, barcode string, name string, description string, location string, quantity int) error
 }

@@ -21,6 +21,7 @@ func SetupRouter(warehouseRepository usecases.WarehouseRepository) *gin.Engine {
 		v1.GET("/placeholder", usecases.Placeholder(warehouseRepository, "placeholder"))
 		v1.POST("/item/single", usecases.GetSingleItemInformation(warehouseRepository))
 		v1.GET("/item/all", usecases.GetAllItems(warehouseRepository))
+		v1.POST("/item/single/update", usecases.UpdateItemInformation(warehouseRepository))
 	}
 
 	return r

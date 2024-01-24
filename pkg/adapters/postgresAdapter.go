@@ -69,3 +69,8 @@ func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]*entities.ItemInfo
 	}
 	return items, nil
 }
+
+func (p *PostgresAdapter) UpdateItemInformation(ctx context.Context, barcodePrefix string, itemName string, description string, locationName string, quantity int) error {
+	//TODO implement me
+	panic("implement me")
+}
