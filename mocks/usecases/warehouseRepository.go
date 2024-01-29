@@ -40,10 +40,10 @@ func (m *MockWarehouseRepository) EXPECT() *MockWarehouseRepositoryMockRecorder 
 }
 
 // GetAllItems mocks base method.
-func (m *MockWarehouseRepository) GetAllItems(arg0 context.Context) ([]*entities.ItemInformation, error) {
+func (m *MockWarehouseRepository) GetAllItems(arg0 context.Context) ([]entities.ItemInformation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAllItems", arg0)
-	ret0, _ := ret[0].([]*entities.ItemInformation)
+	ret0, _ := ret[0].([]entities.ItemInformation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

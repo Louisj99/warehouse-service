@@ -47,7 +47,7 @@ func (p *PostgresAdapter) GetItemInformation(ctx context.Context, barcode string
 	return item, nil
 }
 
-func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]*entities.ItemInformation, error) {
+func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]entities.ItemInformation, error) {
 	query := `SELECT Item.item_id, Item.item_name, Item.description, Inventory.quantity, Location.location_name
 			  FROM Item 
 			  INNER JOIN Inventory ON Item.item_id = Inventory.item_id
@@ -58,9 +58,9 @@ func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]*entities.ItemInfo
 		return nil, err
 	}
 
-	var items []*entities.ItemInformation
+	var items []entities.ItemInformation
 	for rows.Next() {
-		item := &entities.ItemInformation{}
+		item := entities.ItemInformation{}
 		err := rows.Scan(&item.BarcodePrefix, &item.ItemName, &item.Description, &item.Quantity, &item.LocationName)
 		if err != nil {
 			return nil, err
