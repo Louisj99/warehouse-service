@@ -3,14 +3,18 @@ package usecases
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 type updateSingleItemInformationRequest struct {
-	BarcodePrefix string `json:"barcodePrefix" required:"true"`
-	ItemName      string `json:"itemName" required:"true"`
-	Description   string `json:"description" required:"true"`
-	LocationName  string `json:"locationName" required:"true"`
-	Quantity      int    `json:"quantity" required:"true"`
+	BarcodePrefix string  `json:"barcodePrefix"`
+	ItemName      string  `json:"itemName" `
+	Description   string  `json:"description" `
+	LocationName  string  `json:"locationName"`
+	Quantity      int     `json:"quantity"`
+	Price         float32 `json:"price"`
+	Category      string  `json:"category"`
+	Size          int     `json:"size" `
 }
 
 func UpdateItemInformation(warehouseRepository WarehouseRepository) gin.HandlerFunc {
@@ -43,7 +47,20 @@ func UpdateItemInformation(warehouseRepository WarehouseRepository) gin.HandlerF
 			c.JSON(400, gin.H{"error": "quantity is required"})
 			return
 		}
-		err = warehouseRepository.UpdateItemInformation(c, request.BarcodePrefix, request.ItemName, request.Description, request.LocationName, request.Quantity)
+		if request.Price == 0 {
+			c.JSON(400, gin.H{"error": "price is required"})
+			return
+		}
+		if request.Category == "" {
+			c.JSON(400, gin.H{"error": "category is required"})
+			return
+		}
+		if request.Size == 0 {
+			c.JSON(400, gin.H{"error": "size is required"})
+			return
+		}
+		currentTime := time.Now()
+		err = warehouseRepository.UpdateItemInformation(c, request.BarcodePrefix, request.ItemName, request.Description, request.Price, request.Category, request.Size, request.LocationName, request.Quantity, currentTime)
 		if err != nil {
 			if err.Error() == "sql: no rows in result set" {
 				c.JSON(404, gin.H{"error": "item not found"})
