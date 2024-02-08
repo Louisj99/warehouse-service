@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"time"
 	"warehouse-service/pkg/entities"
 )
 
@@ -10,7 +11,7 @@ type WarehouseRepository interface {
 	PlaceholderAdapter(context.Context, string) error
 	GetItemInformation(context.Context, string) (*entities.ItemInformation, error)
 	GetAllItems(ctx context.Context) ([]entities.ItemInformation, error)
-	UpdateItemInformation(context.Context, string, string, string, string, int) error
+	UpdateItemInformation(context.Context, string, string, string, float32, string, int, string, int, time.Time) error
 }
 
 //TODO : find a reason to not add this to the usecase files individually
