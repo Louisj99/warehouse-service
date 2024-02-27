@@ -3,25 +3,21 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
-
-	"github.com/joho/godotenv"
 	"warehouse-service/pkg/adapters"
 	"warehouse-service/pkg/drivers"
 )
 
 func main() {
-
-	err := godotenv.Load()
+	config, err := adapters.NewConfig()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal(err)
 	}
 
-	host := os.Getenv("HOST")
-	port := os.Getenv("PORT")
-	user := os.Getenv("USER")
-	password := os.Getenv("PASSWORD")
-	dbname := os.Getenv("DBNAME")
+	host := config.Host
+	port := config.Port
+	user := config.User
+	password := config.Password
+	dbname := config.Dbname
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
