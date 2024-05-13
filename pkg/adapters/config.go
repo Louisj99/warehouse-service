@@ -6,11 +6,11 @@ import (
 )
 
 type Config struct {
-	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	Dbname   string `yaml:"dbname"`
+	Host     string `yaml:"HOST"`
+	Port     string `yaml:"PORT"`
+	User     string `yaml:"USER"`
+	Password string `yaml:"PASSWORD"`
+	Dbname   string `yaml:"DBNAME"`
 }
 
 func NewConfig() (*Config, error) {
