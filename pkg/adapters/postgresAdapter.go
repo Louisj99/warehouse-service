@@ -71,7 +71,7 @@ func (p *PostgresAdapter) GetAllItems(ctx context.Context) ([]entities.ItemInfor
 	return items, nil
 }
 
-func (p *PostgresAdapter) UpdateItemInformation(ctx context.Context, barcodePrefix string, itemName string, description string, price float32, category string, size int, locationName string, quantity int, updatedAt time.Time) error {
+func (p *PostgresAdapter) UpdateItemInformation(ctx context.Context, barcodePrefix string, itemName string, description string, locationName string, quantity int, updatedAt time.Time) error {
 	var locationID int
 
 	getLocationIDQuery := `SELECT location_id FROM Location WHERE location_name = $1;`
@@ -85,14 +85,14 @@ func (p *PostgresAdapter) UpdateItemInformation(ctx context.Context, barcodePref
 SET location_id = $1, quantity = $2, last_updated = $3
 WHERE item_id = $4;`
 	updateItemQuery := `UPDATE item
-	SET item_name = $1, description = $2, price = $3, category = $4, size = $5
-	WHERE item_id = $6;`
+	SET item_name = $1, description = $2
+	WHERE item_id = $3;`
 
 	_, err = p.DB.Exec(updateInventoryQuery, locationID, quantity, updatedAt, barcodePrefix)
 	if err != nil {
 		return err
 	}
-	_, err = p.DB.Exec(updateItemQuery, itemName, description, price, category, size, barcodePrefix)
+	_, err = p.DB.Exec(updateItemQuery, itemName, description, barcodePrefix)
 
 	return nil
 }
